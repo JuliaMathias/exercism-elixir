@@ -1,4 +1,4 @@
-defmodule Exercism.AnonymousFunctions.Secrets do
+defmodule Exercism.Functions.Secrets do
   @moduledoc """
   In this exercise, you've been tasked with writing the software for an encryption device that works by performing transformations on data. You need a way to flexibly create complicated functions by combining simpler functions together.
 

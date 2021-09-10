@@ -20,24 +20,11 @@ defmodule Exercism.Booleans.Year do
     except every year that is evenly divisible by 100
       unless the year is also evenly divisible by 400
   """
+
   @spec leap_year?(non_neg_integer) :: boolean
   def leap_year?(year) do
-    case divisible_by_4?(year) do
-      true ->
-        cond do
-          divisible_by_100?(year) && divisible_by_400?(year) -> true
-          divisible_by_100?(year) -> false
-          true -> true
-        end
-
-      false ->
-        false
-    end
+    (divisible_by?(year, 4) and not divisible_by?(year, 100)) or divisible_by?(year, 400)
   end
 
-  defp divisible_by_4?(year), do: if(rem(year, 4) == 0, do: true, else: false)
-
-  defp divisible_by_100?(year), do: if(rem(year, 100) == 0, do: true, else: false)
-
-  defp divisible_by_400?(year), do: if(rem(year, 400) == 0, do: true, else: false)
+  defp divisible_by?(year, divider), do: rem(year, divider) == 0
 end

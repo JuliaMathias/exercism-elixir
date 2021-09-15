@@ -29,13 +29,7 @@ defmodule Exercism.Guards.TwoFer do
     "One for Julia, one for me."
   """
   @spec two_fer(String.t()) :: String.t()
-  def two_fer(name \\ nil)
-
-  def two_fer(nil) do
-    "One for you, one for me."
-  end
-
-  def two_fer(name) when is_binary(name) do
+  def two_fer(name \\ "you") when is_binary(name) do
     "One for #{name}, one for me."
   end
 end

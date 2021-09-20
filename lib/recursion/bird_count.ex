@@ -41,7 +41,14 @@ defmodule Exercism.Recursion.BirdCount do
     iex> BirdCount.has_day_without_birds?([3, 8, 1, 5])
     false
   """
-  def has_day_without_birds?(list), do: Enum.member?(list, 0)
+  def has_day_without_birds?([]), do: false
+
+  def has_day_without_birds?([head | tail]) do
+    case head do
+      0 -> true
+      _ -> has_day_without_birds?(tail)
+    end
+  end
 
   @spec total(list) :: integer
   @doc """

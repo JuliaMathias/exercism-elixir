@@ -1,0 +1,3 @@
+%{
+  "inspector": {:hex, :inspector, "0.1.0", "9bf6fa5043353cdbff9a28315e2cca50f7a2ae24fae3a4bb32d371be4b626eab", [:mix], [], "hexpm", "f9b9e2e9437e121f6fee554a8585cf7afa3489949a46bcf5b1723f52bb57b995"},
+}

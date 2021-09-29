@@ -10,27 +10,34 @@ defmodule Exercism.Case.Username do
   @doc """
   Implement the sanitize/1 function. It should accept a username as a charlist and return the username with all characters but lowercase letters removed.
 
+  Extend the sanitize/1 function. It should not remove underscores from the username.
+
+
+
   ## Examples
     iex> Username.sanitize('schmidt1985')
     'schmidt'
     iex> Username.sanitize('mark_fischer$$$')
     'mark_fischer'
+    iex> Username.sanitize('cäcilie_weiß')
+    'caecilie_weiss'
   """
-  def sanitize(username) do
-    # ä becomes ae
-    # ö becomes oe
-    # ü becomes ue
-    # ß becomes ss
+  @spec sanitize(charlist) :: charlist
+  def sanitize(username), do: username |> do_sanitize([])
 
-    # Please implement the sanitize/1 function
-    username
-    |> List.to_string()
-    |> String.replace(~r"[0-9 /]", "")
-    |> String.to_charlist()
+  defp do_sanitize([], acc) do
+    Enum.reverse(acc)
+  end
 
-    # case head do
-    #   head when head in 97..122 -> sanitize([tail])
-
-    # end
+  defp do_sanitize([head | tail], acc) do
+    case head do
+      head when head in 97..122 -> do_sanitize(tail, [head | acc])
+      95 -> do_sanitize(tail, [head | acc])
+      223 -> do_sanitize(tail, [115, 115 | acc])
+      228 -> do_sanitize(tail, [101, 97 | acc])
+      246 -> do_sanitize(tail, [101, 111 | acc])
+      252 -> do_sanitize(tail, [101, 117 | acc])
+      _ -> do_sanitize(tail, acc)
+    end
   end
 end

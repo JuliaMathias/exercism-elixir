@@ -10,6 +10,7 @@ defmodule Exercism.Regex.DateParser do
 
   # Implement day/0, month/0, and year/0 to return a string pattern which, when compiled, would match the numeric components in "01/01/1970" (dd/mm/yyyy). The day and month may appear as 1 or 01 (left padded with zeroes).
 
+  @spec day :: binary
   @doc """
   Parses day from a date.
 
@@ -27,6 +28,7 @@ defmodule Exercism.Regex.DateParser do
   """
   def day(), do: "(?<day>0[1-9]|1[0-9]|2[0-9]|3[0-1]|^[1-9]$)"
 
+  @spec month :: binary
   @doc """
   Parses month from a date.
 
@@ -40,6 +42,7 @@ defmodule Exercism.Regex.DateParser do
   """
   def month(), do: "(?<month>0[1-9]|1[0-9]|^[1-9]$)"
 
+  @spec year :: binary
   @doc """
   Parses year from a date.
 
@@ -51,45 +54,93 @@ defmodule Exercism.Regex.DateParser do
   """
   def year(), do: "(?<year>\\d{4})"
 
-  def day_names() do
-    # Please implement the day_names/0 function
-  end
+  @spec day_names :: binary
+  @doc """
+  Implement day_names/0 to return a string pattern which, when compiled, would match the named day of the week.
 
+  ## Example
+    iex> "Tuesday" =~ DateParser.day_names() |> Regex.compile!()
+    true
+    iex> "Abracadabra" =~ DateParser.day_names() |> Regex.compile!()
+    false
+
+  """
+  def day_names(), do: "(?<day_name>Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)"
+
+  @spec month_names :: binary
+  @doc """
+  Implement month_names/0 to return a string pattern which, when compiled, would match the named month of the year.
+
+  ## Example
+    iex> "March" =~ DateParser.month_names() |> Regex.compile!()
+    true
+    iex> "Abracadabra" =~ DateParser.month_names() |> Regex.compile!()
+    false
+  """
   def month_names() do
-    # Please implement the month_names/0 function
+    "(?<month_name>January|February|March|April|May|June|July|August|September|October|November|December)"
   end
 
-  def capture_day() do
-    # Please implement the capture_day/0 function
-  end
+  @spec capture_day :: binary
+  @doc """
+  Implement capture_day/0 to return a string pattern which captures the day component to the names.
 
-  def capture_month() do
-    # Please implement the capture_month/0 function
-  end
+  ## Example
+    iex> DateParser.capture_day() |> Regex.compile!() |> Regex.named_captures("01")
+    %{"day" => "01"}
+  """
+  def capture_day(), do: day()
 
-  def capture_year() do
-    # Please implement the capture_year/0 function
-  end
+  @spec capture_month :: binary
+  @doc """
+  Implement capture_month/0 to return a string pattern which captures the month component to the names.
 
-  def capture_day_name() do
-    # Please implement the capture_day_name/0 function
-  end
+  ## Example
+    iex> DateParser.capture_month() |> Regex.compile!() |> Regex.named_captures("01")
+    %{"month" => "01"}
+  """
+  def capture_month(), do: month()
 
-  def capture_month_name() do
-    # Please implement the capture_month_name/0 function
-  end
+  @spec capture_year :: binary
+  @doc """
+  Implement capture_year/0 to return a string pattern which captures the year component to the names.
 
-  def capture_numeric_date() do
-    # Please implement the capture_numeric_date/0 function
-  end
+  ## Example
+    iex> DateParser.capture_year() |> Regex.compile!() |> Regex.named_captures("2001")
+    %{"year" => "2001"}
+  """
+  def capture_year(), do: year()
 
+  @spec capture_day_name :: binary
+  @doc """
+  Implement capture_day_name/0 to return a string pattern which captures the day_name component to the names.
+
+  ## Example
+    iex> DateParser.capture_day_name() |> Regex.compile!() |> Regex.named_captures("Monday")
+    %{"day_name" => "Monday"}
+  """
+  def capture_day_name(), do: day_names()
+
+  @spec capture_month_name :: binary
+  @doc """
+  Implement capture_month_name/0 to return a string pattern which captures the month_name component to the names.
+
+  ## Example
+    iex> DateParser.capture_month_name() |> Regex.compile!() |> Regex.named_captures("December")
+    %{"month_name" => "December"}
+  """
+  def capture_month_name(), do: month_names()
+
+  @spec capture_numeric_date :: binary
+  def capture_numeric_date(), do: day() <> "/" <> month() <> "/" <> year()
+
+  @spec capture_month_name_date :: binary
   def capture_month_name_date() do
-    # Please implement the capture_month_name_date/0 function
+    month_names() <> " " <> day() <> ", " <> year()
   end
 
-  def capture_day_month_name_date() do
-    # Please implement the capture_day_month_name_date/0 function
-  end
+  @spec capture_day_month_name_date :: binary
+  def capture_day_month_name_date(), do: day_names() <> ", " <> capture_month_name_date()
 
   def match_numeric_date() do
     # Please implement the match_numeric_date/0 function

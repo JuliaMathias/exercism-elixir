@@ -65,23 +65,26 @@ defmodule Exercism.KeywordLists.WineCellar do
   """
 
   def filter(cellar, color, opts \\ []) do
-    color_list = Keyword.get_values(cellar, color)
+    Keyword.get_values(cellar, color)
+    |> maybe_filter_by_year(opts)
+    |> maybe_filter_by_country(opts)
+  end
 
-    case opts do
-      [year: year] ->
-        color_list |> filter_by_year(year)
+  defp maybe_filter_by_year(color_list, opts) do
+    if Keyword.has_key?(opts, :year) do
+      year = Keyword.get_values(opts, :year) |> Enum.at(0)
+      filter_by_year(color_list, year)
+    else
+      color_list
+    end
+  end
 
-      [country: country] ->
-        color_list |> filter_by_country(country)
-
-      [year: year, country: country] ->
-        color_list |> filter_by_year(year) |> filter_by_country(country)
-
-      [country: country, year: year] ->
-        color_list |> filter_by_year(year) |> filter_by_country(country)
-
-      [] ->
-        color_list
+  defp maybe_filter_by_country(color_list, opts) do
+    if Keyword.has_key?(opts, :country) do
+      country = Keyword.get_values(opts, :country) |> Enum.at(0)
+      filter_by_country(color_list, country)
+    else
+      color_list
     end
   end
 

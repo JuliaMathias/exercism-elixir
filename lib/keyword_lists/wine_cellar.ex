@@ -72,7 +72,7 @@ defmodule Exercism.KeywordLists.WineCellar do
 
   defp maybe_filter_by_year(color_list, opts) do
     if Keyword.has_key?(opts, :year) do
-      year = Keyword.get_values(opts, :year) |> Enum.at(0)
+      year = Keyword.get(opts, :year)
       filter_by_year(color_list, year)
     else
       color_list
@@ -81,7 +81,7 @@ defmodule Exercism.KeywordLists.WineCellar do
 
   defp maybe_filter_by_country(color_list, opts) do
     if Keyword.has_key?(opts, :country) do
-      country = Keyword.get_values(opts, :country) |> Enum.at(0)
+      country = Keyword.get(opts, :country)
       filter_by_country(color_list, country)
     else
       color_list

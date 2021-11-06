@@ -12,6 +12,7 @@ defmodule Exercism.Binaries.FileSniffer do
   | JPG	      | "jpg"	           | "image/jpg"	              |0xFF, 0xD8, 0xFF                                |
   | GIF	      | "gif"	           | "image/gif"	              |0x47, 0x49, 0x46                                |
   """
+  @spec type_from_extension(String.t()) :: String.t()
   @doc """
   Implement the type_from_extension/1 function. It should take a file extension (string) and return the media type (string).
 
@@ -30,6 +31,7 @@ defmodule Exercism.Binaries.FileSniffer do
     end
   end
 
+  @spec type_from_binary(binary) :: String.t()
   @doc """
   Implement the type_from_binary/1 function. It should take a file (binary) and return the media type (string).
   """
@@ -42,6 +44,7 @@ defmodule Exercism.Binaries.FileSniffer do
   def type_from_binary(<<0xFF, 0xD8, 0xFF, _::binary>>), do: type_from_extension("jpg")
   def type_from_binary(<<0x47, 0x49, 0x46, _::binary>>), do: type_from_extension("gif")
 
+  @spec verify(binary, String.t()) :: {:error, String.t()} | {:ok, String.t()}
   @doc """
   Implement the verify/2 function. It should take a file (binary) and extension (string) and return an :ok or :error tuple.
   """

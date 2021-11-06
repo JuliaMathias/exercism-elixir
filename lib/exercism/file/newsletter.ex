@@ -43,7 +43,7 @@ defmodule Exercism.File.Newsletter do
   iex> :ok
 
   """
-  def log_sent_email(pid, email), do: IO.write(pid, "#{email}\n")
+  def log_sent_email(pid, email), do: IO.puts(pid, email)
 
   @spec close_log(pid) :: :ok | {:error, atom}
   @doc """

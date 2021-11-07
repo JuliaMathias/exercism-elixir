@@ -65,8 +65,7 @@ defmodule Exercism.AST.TopSecret do
     |> check_for_multiple_modules()
     |> get_functions()
     |> handle_functions()
-    |> Enum.reverse()
-    |> List.to_string()
+    |> decode_final_message()
   end
 
   defp get_message(ast, acc) do
@@ -113,10 +112,6 @@ defmodule Exercism.AST.TopSecret do
   defp do_decode([], acc), do: acc
 
   defp do_decode([head | tail], acc) do
-    # IO.inspect(head, label: :head)
-    # IO.inspect(tail, label: :tail)
-    # IO.inspect(acc, label: :acc)
-
     acc = decode_secret_message_part(head, acc) |> elem(1)
 
     do_decode(tail, acc)
@@ -135,15 +130,9 @@ defmodule Exercism.AST.TopSecret do
     end
   end
 
-  defp get_functions(ast) when is_list(ast) do
-    IO.inspect(ast)
-
-    do_get_functions(ast, [])
-  end
+  defp get_functions(ast) when is_list(ast), do: do_get_functions(ast, [])
 
   defp get_functions(ast) do
-    IO.inspect(ast)
-
     if elem(ast, 0) != :defmodule do
       ast
     else
@@ -157,6 +146,8 @@ defmodule Exercism.AST.TopSecret do
     do_get_functions(tail, [get_functions(head) | acc])
   end
 
+  defp handle_functions(functions) when is_list(functions), do: do_handle_functions(functions, [])
+
   defp handle_functions(functions) do
     third_element = functions |> elem(2) |> List.first() |> elem(0)
 
@@ -164,6 +155,25 @@ defmodule Exercism.AST.TopSecret do
       do_decode([functions], [])
     else
       functions |> elem(2) |> do_decode([])
+    end
+  end
+
+  defp do_handle_functions([], acc), do: acc
+
+  defp do_handle_functions([head | tail], acc) do
+    do_handle_functions(tail, [handle_functions(head) | acc])
+  end
+
+  defp decode_final_message(message) do
+    if Enum.count(message) > 1 do
+      message
+      |> List.flatten()
+      |> Enum.reverse()
+      |> List.to_string()
+    else
+      message
+      |> Enum.reverse()
+      |> List.to_string()
     end
   end
 end

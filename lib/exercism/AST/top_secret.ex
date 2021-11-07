@@ -29,6 +29,7 @@ defmodule Exercism.AST.TopSecret do
   """
   def to_ast(string), do: Code.string_to_quoted!(string)
 
+  @spec decode_secret_message_part(tuple, list) :: {tuple, list}
   @doc """
   Implement the TopSecret.decode_secret_message_part/2 function. It should take an AST node and an accumulator for the secret message (a list). It should return a tuple with the AST node unchanged as the first element, and the accumulator as the second element.
 
@@ -57,6 +58,7 @@ defmodule Exercism.AST.TopSecret do
     end
   end
 
+  @spec decode_secret_message(binary) :: String.t()
   @doc """
   Implement the TopSecret.decode_secret_message/1 function. It should take a string with Elixir code and return the secret message as a string decoded from all function definitions found in the code. Make sure to reuse functions defined in previous steps.
   """

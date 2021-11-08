@@ -11,6 +11,7 @@ defmodule Exercism.ListComprehensions.BoutiqueSuggestions do
   }
   """
 
+  @spec get_combinations(list, list, keyword) :: list
   @doc """
   Implement get_combinations/3 to take a list of tops, a list of bottoms, and keyword list of options. For now, set options to default to an empty keyword list. The function should return the cartesian product of the lists.
 
@@ -47,11 +48,13 @@ defmodule Exercism.ListComprehensions.BoutiqueSuggestions do
   def get_combinations(tops, bottoms, options \\ []) do
     cond do
       Map.has_key?(Enum.fetch!(tops, 0), :price) ->
-        for x <- tops,
-            y <- bottoms,
-            x.base_color != y.base_color and
-              x.price + y.price <= Keyword.get(options, :maximum_price) do
-          {Map.take(x, [:item_name]), Map.take(y, [:item_name])}
+        maximum_price = Keyword.get(options, :maximum_price, 100)
+
+        for top <- tops,
+            bottom <- bottoms,
+            top.base_color != bottom.base_color,
+            top.price + bottom.price <= maximum_price do
+          {top, bottom}
         end
 
       Map.has_key?(Enum.fetch!(tops, 0), :base_color) ->

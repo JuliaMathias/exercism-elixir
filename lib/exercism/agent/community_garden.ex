@@ -29,6 +29,7 @@ defmodule Exercism.Agent.CommunityGarden do
   """
   def list_registrations(pid), do: Agent.get(pid, fn state -> state end)
 
+  @spec register(pid, any) :: any
   @doc """
   Implement the CommunityGarden.register/2 function. It should receive the pid for the community garden and a name to register the plot. It should return the Plot struct with the plot's id and person registered to when it is successful.
 
@@ -46,11 +47,42 @@ defmodule Exercism.Agent.CommunityGarden do
     list_registrations(pid) |> List.first()
   end
 
+  @spec release(pid, any) :: :ok
+  @doc """
+  Implement the CommunityGarden.release/2 function. It should receive the pid and id of the plot to be released. It should return :ok on success. When a plot is released, the id is not re-used, it is used as a unique identifier only.
+
+  ### Example
+
+  iex> {:ok, pid} = CommunityGarden.start()
+  iex> CommunityGarden.register(pid, "Emma Balan")
+  %Plot{plot_id: 1, registered_to: "Emma Balan"}
+  iex> CommunityGarden.release(pid, 1)
+  :ok
+  iex> CommunityGarden.list_registrations(pid)
+  []
+  """
   def release(pid, plot_id) do
-    # Please implement the release/2 function
+    Agent.update(pid, fn state -> Enum.reject(state, fn plot -> plot.plot_id == plot_id end) end)
   end
 
+  @spec get_registration(pid, any) :: %Plot{} | {:not_found, String.t()}
+  @doc """
+  Implement the CommunityGarden.get_registration/2 function. It should receive the pid and id of the plot to be checked. It should return the plot if it is registered, and :not_found if it is unregistered.
+
+  ### Example
+
+  iex> {:ok, pid} = CommunityGarden.start()
+  iex> CommunityGarden.register(pid, "Emma Balan")
+  %Plot{plot_id: 1, registered_to: "Emma Balan"}
+  iex> CommunityGarden.get_registration(pid, 1)
+  %Plot{plot_id: 1, registered_to: "Emma Balan"}
+  iex> CommunityGarden.get_registration(pid, 7)
+  {:not_found, "plot is unregistered"}
+  """
   def get_registration(pid, plot_id) do
-    # Please implement the get_registration/2 function
+    registration =
+      Agent.get(pid, fn state -> Enum.find(state, fn plot -> plot.plot_id == plot_id end) end)
+
+    if registration == nil, do: {:not_found, "plot is unregistered"}, else: registration
   end
 end

@@ -9,6 +9,7 @@ defmodule Exercism.Streams.LucasNumbers do
 
   While designing your function, you want to make use of lazy evaluation, so that you can generate as many numbers as you want, but only if you need to -- So you decide to use a stream:
   """
+  @spec generate(integer) :: list
   def generate(count) when not is_integer(count) or count < 1,
     do: raise(ArgumentError, message: "count must be specified as an integer >= 1")
 

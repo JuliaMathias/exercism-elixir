@@ -54,11 +54,54 @@ defmodule Exercism.Links.RPNCalculatorInspection do
     end
   end
 
-  def reliability_check(calculator, inputs) do
-    Process.flag(self(), :trap_exit, true)
+  @doc """
+  Implement the RPNCalculatorInspection.reliability_check/2 function. It should take 2 arguments, a function (the calculator), and a list of inputs for the calculator.
+
+  For every input on the list, it should start the reliability check in a new linked process by using start_reliability_check/2. Then, for every process started this way, it should await its results by using await_reliability_check_result/2.
+
+  Before starting any processes, the function needs to flag the current process to trap exits, to be able to receive exit messages. Afterwards, it should reset this flag to its original value.
+
+  The function should return a map with the results of reliability checks of all the inputs.
+
+  ### Example
+  fake_broken_calculator = fn input ->
+  if String.ends_with?(input, "*"), do: raise "oops"
   end
 
-  # def correctness_check(calculator, inputs) do
-  #   # Please implement the correctness_check/2 function
-  # end
+  inputs = ["2 3 +", "10 3 *", "20 2 /"]
+  iex> RPNCalculatorInspection.reliability_check(fake_broken_calculator, inputs)
+  %{
+      "2 3 +" => :ok,
+      "10 3 *" => :error,
+      "20 2 /" => :ok
+    }
+  """
+  @spec reliability_check(function, list) :: map
+  def reliability_check(calculator, inputs) do
+    trap_flag_before_check = Process.flag(:trap_exit, true)
+
+    inputs
+    |> Enum.map(&start_reliability_check(calculator, &1))
+    |> Enum.reduce(%{}, &await_reliability_check_result/2)
+    |> tap(fn _ -> Process.flag(:trap_exit, trap_flag_before_check) end)
+  end
+
+  @doc """
+  Implement the RPNCalculatorInspection.correctness_check/2 function. It should take 2 arguments, a function (the calculator), and a list of inputs for the calculator.
+
+  For every input on the list, it should start an asynchronous task that will call the calculator with the given input. Then, for every task started this way, it should await its results for 100ms.
+
+  ### Example
+
+  fast_cheating_calculator = fn input -> 14 end
+  inputs = ["13 1 +", "50 2 *", "1000 2 /"]
+  iex> RPNCalculatorInspection.correctness_check(fast_cheating_calculator, inputs)
+  [14, 14, 14]
+  """
+  @spec correctness_check(function, list) :: list
+  def correctness_check(calculator, inputs) do
+    inputs
+    |> Enum.map(&Task.async(fn -> calculator.(&1) end))
+    |> Enum.map(&Task.await(&1, 100))
+  end
 end

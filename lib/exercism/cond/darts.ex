@@ -1,4 +1,4 @@
-defmodule Darts do
+defmodule Exercism.Cond.Darts do
   @moduledoc """
   Write a function that returns the earned points in a single toss of a Darts game.
 
@@ -25,8 +25,14 @@ defmodule Darts do
   @spec score(position :: position) :: integer
   def score({x, y}) do
     cond do
-      x in 0..1 && y in 0..1 -> 10
-      x in 2..5 && y in 0..1 -> 10
+      inside?(1, {x, y}) -> 10
+      inside?(5, {x, y}) -> 5
+      inside?(10, {x, y}) -> 1
+      true -> 0
     end
+  end
+
+  defp inside?(r, {x, y}) do
+    r * r - x * x - y * y >= 0
   end
 end

@@ -1,6 +1,6 @@
-defmodule Exercism.Floats.SpaceAgeTest do
+defmodule Exercism.Numbers.SpaceAgeTest do
   use ExUnit.Case
-  alias Exercism.Floats.SpaceAge
+  alias Exercism.Numbers.SpaceAge
 
   test "age on Earth" do
     input = 1_000_000_000

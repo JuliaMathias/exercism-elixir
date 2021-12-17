@@ -31,7 +31,7 @@ defmodule Exercism.Guards.CollatzConjecture do
     - if number is even, divide by 2
   """
   @spec calc(input :: pos_integer()) :: non_neg_integer()
-  def calc(input) when input >= 1, do: do_calc(input, 0)
+  def calc(input) when input >= 1 and is_integer(input), do: do_calc(input, 0)
 
   defp do_calc(1, steps), do: steps
 

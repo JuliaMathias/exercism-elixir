@@ -44,12 +44,12 @@ defmodule Exercism.MultipleClauseFunctions.PrimeFactors do
   @spec factors_for(pos_integer) :: [pos_integer]
   def factors_for(number), do: do_factors_for(number, [], 2)
 
-  defp do_factors_for(1, factors, _possible_factor), do: factors
+  defp do_factors_for(1, factors, _possible_factor), do: Enum.reverse(factors)
 
   defp do_factors_for(number, factors, possible_factor) do
     if rem(number, possible_factor) == 0 do
       new_number = div(number, possible_factor)
-      do_factors_for(new_number, factors ++ [possible_factor], possible_factor)
+      do_factors_for(new_number, [possible_factor | factors], possible_factor)
     else
       do_factors_for(number, factors, possible_factor + 1)
     end

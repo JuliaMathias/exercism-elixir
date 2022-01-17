@@ -40,6 +40,7 @@ defmodule Exercism.Recursion.RomanNumerals do
     |> from_decimal_to_roman()
   end
 
+  @spec decimal(binary) :: non_neg_integer
   def decimal(number) do
     from_roman_to_decimal(number, 0)
   end

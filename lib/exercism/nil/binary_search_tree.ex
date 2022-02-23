@@ -60,84 +60,19 @@ defmodule Exercism.Nil.BinarySearchTree do
   Creates and inserts a node with its value as 'data' into the tree.
   """
   @spec insert(bst_node, any) :: bst_node
-  def insert(tree, data) do
-    # read this to solve it: https://dockyard.com/blog/2016/02/01/elixir-best-practices-deeply-nested-maps
+  def insert(nil, data), do: new(data)
 
-    find_node(tree, tree, data, [])
+  def insert(root = %{data: root_data}, data) when data <= root_data do
+    %{root | left: insert(root.left, data)}
   end
 
-  defp find_node(tree, working_tree, input, path) do
-    # IO.puts("Entering find node")
+  def insert(root, data), do: %{root | right: insert(root.right, data)}
 
-    # IO.inspect(binding(),
-    #   label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-    #   limit: :infinity
-    # )
+  @doc """
+  Traverses the Binary Search Tree in order and returns a list of each node's data.
+  """
+  @spec in_order(bst_node) :: [any]
+  def in_order(nil), do: []
 
-    cond do
-      tree.left == nil and input <= tree.data ->
-        Map.replace!(tree, :left, %{data: input, left: nil, right: nil})
-
-      tree.right == nil and input > tree.data ->
-        Map.replace!(tree, :right, %{data: input, left: nil, right: nil})
-
-      true ->
-        update_complex_tree(tree, working_tree, input, path)
-    end
-  end
-
-  defp update_node(tree, input, path) do
-    # IO.puts("Entering update node")
-
-    # IO.inspect(binding(),
-    #   label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-    #   limit: :infinity
-    # )
-
-    put_in(tree, path, %{data: input, left: nil, right: nil})
-  end
-
-  defp update_complex_tree(tree, working_tree, input, path) do
-    # IO.puts("Entering update complex tre")
-
-    # IO.inspect(binding(),
-    #   label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-    #   limit: :infinity
-    # )
-
-    cond do
-      working_tree.right == nil and input == working_tree.data + 1 ->
-        update_node(tree, input, path ++ [:right])
-
-      working_tree.left == nil and input == working_tree.data - 1 ->
-        update_node(tree, input, path ++ [:left])
-
-      working_tree.left == nil and input == working_tree.data ->
-        update_node(tree, input, path ++ [:left])
-
-      input > working_tree.data ->
-        update_complex_tree(tree, tree.right, input, path ++ [:right])
-
-      input <= working_tree.data ->
-        update_complex_tree(tree, tree.left, input, path ++ [:left])
-    end
-  end
-
-  #
-  # @doc """
-  # Traverses the Binary Search Tree in order and returns a list of each node's data.
-  # """
-  # @spec in_order(bst_node) :: [any]
-  # def in_order(tree) do
-  #   do_in_order(tree, [])
-  # end
-
-  # defp do_in_order(tree, list) do
-  #   cond do
-  #     tree == nil -> list
-  #     tree.left == nil and tree.right == nil -> [tree.data]
-  #     tree.left == nil -> do_in_order(tree.right, list ++ [tree.data])
-  #     tree.left not nil and
-  #   end
-  # end
+  def in_order(tree), do: in_order(tree.left) ++ [tree.data] ++ in_order(tree.right)
 end

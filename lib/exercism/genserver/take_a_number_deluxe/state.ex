@@ -6,13 +6,6 @@ defmodule Exercism.Genserver.TakeANumberDeluxe.State do
 
   @spec new(integer, integer, timeout) :: {:ok, __MODULE__.t()} | {:error, atom()}
   def new(min_number, max_number, auto_shutdown_timeout \\ :infinity) do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
-
-    IO.puts(" ")
-
     if min_and_max_numbers_valid?(min_number, max_number) and
          timeout_valid?(auto_shutdown_timeout) do
       {:ok,

@@ -38,12 +38,6 @@ defmodule Exercism.Genserver.TakeANumberDeluxe do
   """
   @spec start_link(keyword()) :: {:ok, pid()} | {:error, atom()}
   def start_link(init_arg) do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
-
-    IO.puts(" ")
     GenServer.start_link(__MODULE__, init_arg)
   end
 

@@ -18,30 +18,6 @@ defmodule Exercism.Strings.PigLatin do
 
   @vowels ["a", "e", "i", "o", "u"]
 
-  @consonants [
-    "b",
-    "c",
-    "d",
-    "f",
-    "g",
-    "h",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z"
-  ]
-
   @doc """
   Given a `phrase`, translate it a word at a time to Pig Latin.
   """
@@ -61,14 +37,14 @@ defmodule Exercism.Strings.PigLatin do
          <<first_letter::binary-size(1), second_letter::binary-size(1),
            third_letter::binary-size(1), rest::binary>>
        )
-       when third_letter == "y" and (first_letter in @consonants and second_letter in @consonants),
+       when third_letter == "y" and (first_letter not in @vowels and second_letter not in @vowels),
        do: third_letter <> rest <> first_letter <> second_letter <> "ay"
 
   defp translate_word(
          <<first_letter::binary-size(1), second_letter::binary-size(1), _rest::binary>> = phrase
        )
        when first_letter in @vowels or
-              ((first_letter == "x" or first_letter == "y") and second_letter in @consonants),
+              ((first_letter == "x" or first_letter == "y") and second_letter not in @vowels),
        do: phrase <> "ay"
 
   defp translate_word(
@@ -85,7 +61,7 @@ defmodule Exercism.Strings.PigLatin do
 
   defp consonant_words([h | t]), do: consonant_words(t, h)
 
-  defp consonant_words([h | t], consonant_cluster) when h in @consonants,
+  defp consonant_words([h | t], consonant_cluster) when h not in @vowels,
     do: consonant_words(t, consonant_cluster <> h)
 
   defp consonant_words(rest, consonant_cluster),

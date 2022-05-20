@@ -5,88 +5,40 @@ defmodule Exercism.Recursion.MatchingBrackets do
 
   @start ["[", "{", "("]
   @ending ["]", "}", ")"]
+  @matches %{"]" => "[", "}" => "{", ")" => "("}
 
   @doc """
   Checks that all the brackets and braces in the string are matched correctly, and nested correctly
+
+  "([{}({}[])])"
   """
   @spec check_brackets(String.t()) :: boolean
   def check_brackets(str) do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
-
     str
     |> String.split("", trim: true)
-    |> capture_start(%{string: str, start: [], end: []})
+    |> traverse([])
   end
 
-  defp capture_start([h | t], %{start: start} = map) when h in @start do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
+  # the idea here is to basically grab the first character of the string and then check:
+  #  - is it a start? store it in start
+  #  - is it an end? then we check
+  #     - if the start is empty we fail it
+  #     - does it match the last element of the start array? if not we fail it
+  #     - if it matches, we pop the last element of the start array
+  #   - is it another type of character? ignore it
+  # then when the string is empty we check if the start and end arrays are empty
 
-    new_start = start ++ [h]
+  defp traverse([], []), do: true
+  defp traverse([], _start), do: false
+  defp traverse([h | t], start) when h in @start, do: traverse(t, start ++ [h])
+  defp traverse([h | _t] = string, start) when h in @ending, do: check_end(string, start)
+  defp traverse([_h | t], start), do: traverse(t, start)
 
-    capture_start(t, Map.replace!(map, :start, new_start))
+  defp check_end([h | t], start) do
+    cond do
+      start == [] -> false
+      Map.get(@matches, h) == List.last(start) -> traverse(t, List.delete_at(start, -1))
+      true -> false
+    end
   end
-
-  defp capture_start([_h | t], map), do: capture_start(t, map)
-
-  defp capture_start([], %{string: string} = map),
-    do: capture_end(String.split(string, "", trim: true), map)
-
-  defp capture_end([h | t], %{end: ending} = map) when h in @ending do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
-
-    new_end = ending ++ [h]
-
-    capture_end(t, Map.replace!(map, :end, new_end))
-  end
-
-  defp capture_end([_h | t], map), do: capture_end(t, map)
-
-  defp capture_end([], map), do: check_match(Map.replace!(map, :end, Enum.reverse(map.end)))
-
-  defp check_match(%{string: string, start: [start_head | start_tail], end: [end_head | end_tail]})
-       when start_head == "{" and end_head == "}" do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
-
-    check_match(%{string: string, start: start_tail, end: end_tail})
-  end
-
-  defp check_match(%{string: string, start: [start_head | start_tail], end: [end_head | end_tail]})
-       when start_head == "[" and end_head == "]" do
-    IO.inspect(binding(),
-      label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-      limit: :infinity
-    )
-
-    check_match(%{string: string, start: start_tail, end: end_tail})
-  end
-
-  defp check_match(%{string: string, start: [start_head | start_tail], end: [end_head | end_tail]})
-       when start_head == "(" and end_head == ")" do
-    check_match(%{string: string, start: start_tail, end: end_tail})
-  end
-
-  defp check_match(%{start: [], end: []}), do: true
-
-  defp check_match(_), do: false
-
-  # defp check_match(%{string: string, start: [start_head | start_tail], end: [end_head | end_tail]}) do
-  #   IO.inspect(binding(),
-  #     label: "binding() #{__MODULE__}:#{__ENV__.line} #{DateTime.utc_now()}",
-  #     limit: :infinity
-  #   )
-
-  #   false
-  # end
 end

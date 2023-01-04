@@ -1,6 +1,6 @@
 # Exercism
 
-**TODO: Add description**
+Exercism exercises.
 
 ## Installation
 
